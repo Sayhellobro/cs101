@@ -1,46 +1,46 @@
 #include <stdio.h>
 #include <time.h>
 
-void lotto_writefile(int number[], int n){
-    FILE*fp=fopen("lotto.txt", "wb+");
-    for(int i=0;i<n;i++){
-        fwrite(&num[i], sizeof(int), 1, fp);
-    }
-    fclose(fp);
-    return;
-}
-
-void lotto_readfile(int number[]){
-
-    FILE*fp=fopen("lotto.txt", "rb");
-    int i=0;
-    while(fread(&emp[i], sizeof(int), 1, fp)){
-        printf("[%d] %d %s\n", i, emp[i].id, emp[i].name);
-        i++;
-    }
-    fclose(fp);
-    return;
-}
-
 int main()
 {
-    int num[5][7];
     int n;
+    int turn=0;
     srand((unsigned) time(NULL));
+    FILE *file;
     
-    printf("歡迎光臨長庚樂透彩購買機台\n");
-    printf("請問您要買幾組樂透彩:");
     scanf("%d", &n);
-    printf("以為您購買的 %d 組樂透組合輸出至 lotto.txt", n);
+    
+    
+    file=fopen("lotto.txt", "w+");
+    fwrite("========= lotto649 =========\n",sizeof(char),29,file);
     
     for(int i=0;i<n;i++){
+        turn++;
+        char num[4]={'[',(turn+48),']',':'};
+        fwrite(num,sizeof(char),4,file);
+        
         for(int j=0;j<7;j++){
-            num[i][j]=(rand()%69)+1;
+            int x=rand()%69+1;
+            
+            char Number[3]={' ',((x/10)+48),((x%10)+48)};
+            fwrite(Number,sizeof(char),3,file);
         }
+        fwrite("\n",sizeof(char),1,file);
     }
     
-    lotto_writefile(num, n);
-    lotto_readfile(num);
+    for(int i=0;i<5-n;i++){
+        turn++;
+        char num[4]={'[',(turn+48),']',':'};
+        fwrite(num,sizeof(char),4,file);
+        
+        for(int j=0;j<7;j++){
+            fwrite(" __", sizeof(char), 3, file);
+        }
+        fwrite("\n",sizeof(char),1,file);
+    }
+
+    fwrite("========= csie@CGU =========",sizeof(char),28,file);
+    fclose(file);
 
     return 0;
 }
